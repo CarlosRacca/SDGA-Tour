@@ -1,58 +1,57 @@
 const { Router } = require('express');
 const axios = require('axios');
-const {Videogame, Genre} = require('../database');
+const {Scores, Users} = require('../database');
 
 
 const router = Router();
 
-const getApiInfo = async () => {
-    const apiUrl1 = await axios.get(`https://api.rawg.io/api/games?key=db5d960df49c48e7a2b0ac6dbb92505f&page_size=40&page=1`)
-    const apiUrl2 = await axios.get(`https://api.rawg.io/api/games?key=db5d960df49c48e7a2b0ac6dbb92505f&page_size=40&page=2`)
-    const apiUrl3 = await axios.get(`https://api.rawg.io/api/games?key=db5d960df49c48e7a2b0ac6dbb92505f&page_size=40&page=3`)
+router.post('/score', async(req, res) => {
+    let {front_nine, back_nine, handicap, date} = req.body;
     
-    let data1 = apiUrl1.data.results
-    let data2 = apiUrl2.data.results
-    let data3 = apiUrl3.data.results
+    try {
+        let scorePost = await Scores.create({front_nine, back_nine, handicap, date});
 
-    let totalApiInfo = [...data1, ...data2,...data3];
+        res.status(200).send(scorePost)
 
-    const apiInfo = await totalApiInfo.map(el => {
-        return {
-            id: el.id,
-            name: el.name,
-            description: el.description,
-            releaseDate: el.released,
-            platforms: el.platforms.map(el => el.platform.name),
-            rating: el.rating,
-            img: el.background_image,
-            genres: el.genres.map(el => el.name)
-        }
-    })
-    return apiInfo
-}
+    } catch (error) {
+        res.status(404).send('Cannot post this score')
+    }
+})
 
-const getDbInfo = async () => {
-    return await Videogame.findAll({
-        include:{
-            model: Genre,
-            attributes: ['name'],
-            through:{
-                attributes: []
-            }
-        }
-    })
-}
+router.post('/user', async(req, res) => {
+    let {name, lastname, email, password} = req.body;
+    
+    try {
+        let userCreated = await Users.create({name, lastname, email, password});
+        res.status(200).send(userCreated) 
+    } catch (error) {
+        res.status(404).send("Cannot create this user") 
+    }
+})
 
-const getAllVideogames = async () => {
-    const apiInfo = await getApiInfo();
-    const dbInfo = await getDbInfo();
-    const infoTotal = apiInfo.concat(dbInfo);
-    return infoTotal
-}
+router.get('/scores', async(req, res) => {
+    
+    try {
+        let scoresTotal = await Scores.findAll()
+        res.status(200).send(scoresTotal)
+    } catch (error) {
+        res.status(404).send('Error getting the scores')
+    }
+})
+
+router.get('/users', async(req, res) => {
+    
+    try {
+        let usersTotal = await Users.findAll()
+        res.status(200).send(usersTotal)
+    } catch (error) {
+        res.status(404).send('Error getting the users')
+    }
+})
 
 router.get('/', async(req, res) => {
-    let videogamesTotal = await getAllVideogames();
-    res.status(200).send(videogamesTotal)
+    
+    res.status(200).send('Bienvenido al SDGA Tour!')
 })
 
 module.exports = router;
