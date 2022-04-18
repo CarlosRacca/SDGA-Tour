@@ -26,5 +26,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    matricula: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
   });
 };

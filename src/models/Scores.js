@@ -14,7 +14,7 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    back__nine: {
+    back_nine: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
@@ -23,7 +23,11 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     date: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    matricula: {
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   });

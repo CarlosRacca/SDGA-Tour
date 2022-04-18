@@ -6,23 +6,20 @@ const {Scores, Users} = require('../database');
 const router = Router();
 
 router.post('/score', async(req, res) => {
-    let {front_nine, back_nine, handicap, date} = req.body;
+    let {front_nine, back_nine, handicap, date, matricula} = req.body;
     
-    try {
-        let scorePost = await Scores.create({front_nine, back_nine, handicap, date});
-
+    
+        let scorePost = await Scores.create({front_nine, back_nine, handicap, date, matricula});
+        
         res.status(200).send(scorePost)
-
-    } catch (error) {
-        res.status(404).send('Cannot post this score')
-    }
+ 
 })
 
 router.post('/user', async(req, res) => {
-    let {name, lastname, email, password} = req.body;
+    let {name, lastname, email, password, matricula} = req.body;
     
     try {
-        let userCreated = await Users.create({name, lastname, email, password});
+        let userCreated = await Users.create({name, lastname, email, password, matricula});
         res.status(200).send(userCreated) 
     } catch (error) {
         res.status(404).send("Cannot create this user") 
