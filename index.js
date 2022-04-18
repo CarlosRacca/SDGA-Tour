@@ -1,27 +1,12 @@
-require('dotenv').config();
+const server = require('./src/app.js');
+const { conn } = require('./src/database.js');
 
-const express = require('express');
-const morgan = require('morgan');
+const port = process.env.PORT || 3001
 
-//Initializations
-const app = express();
-require('./database');
+// Syncing all the models at once.
+conn.sync({ force: false }).then(() => {
+  server.listen(port, () => {
+    console.log('%s listening at 3000'); 
+  });
 
-//Settings
-app.set('port', 3000);
-
-//Middlewares
-app.use(morgan('dev'));
-app.use(express.urlencoded({extended: false}));
-app.use(express.json());
-
-
-//Routes
-app.use(require('./routes/index'));
-
-//Start the server
-app.listen(app.get('port'), () => {
-    console.log('Server on port', app.get('port'));
 });
-
-module.exports = app
