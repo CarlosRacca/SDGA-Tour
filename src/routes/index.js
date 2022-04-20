@@ -57,11 +57,45 @@ router.get('/', async(req, res) => {
     res.status(200).send('Bienvenido al SDGA Tour!')
 })
 
+router.delete('/score/:id', async (req, res) => {
+    const id = req.params.id
+
+    if(!id){
+        return res.status(400).send({
+            message: "Por favor suministra el id de la tarjeta que estas tratando de eliminar"
+        })
+    }
+
+    const score = await Scores.findOne({
+        where: {
+            id
+        }
+    })
+
+    if(!score){
+        return res.status(400).send({
+            message: `No se encontro la tarjeta con el id ${id}`
+        })
+    }
+
+    try {
+        await score.destroy();
+
+        return res.send({
+            message: `Tarjeta con el id ${id} ha sido eliminada`
+        })
+    } catch (error) {
+        return res.status(500).send({
+            message: `Error: ${error.message}`,
+          });
+    }
+})
+
 router.delete('/user/:id', async (req, res) => {
     const id = req.params.id;
   if (!id) {
     return res.status(400).send({
-      message: "Por favor suministra el id que estas tratando de eliminar.!",
+      message: "Por favor suministra el id del usuario que estas tratando de eliminar.!",
     });
   }
 
