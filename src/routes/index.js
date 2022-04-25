@@ -32,6 +32,34 @@ router.post('/user', async(req, res) => {
      
 })
 
+router.get('/scoresUser', async(req, res) => {
+    try {
+        let scores = await Scores.findAll()
+        let users = await Users.findAll()
+
+        let scores2 = scores.map(el => {
+            return{
+                id: el.id,
+                matricula: el.matricula,
+                user: users.filter(player => player.matricula === el.matricula).map(player => player.name + ' ' + player.lastname)[0],
+                front_nine: el.front_nine,
+                back_nine: el.back_nine,
+                handicap: el.handicap,
+                totalGross: el.front_nine + el.back_nine,
+                totalNeto: el.front_nine + el.back_nine - el.handicap,
+                date: el.date,
+                month: el.date.slice(3, 5),
+                year: el.date.slice(6),
+                day: el.date.slice(0,2)
+            }
+        })
+
+        res.send(scores2)
+    } catch (error) {
+        res.send(error)
+    }
+})
+
 router.get('/scores', async(req, res) => {
     
     try {
