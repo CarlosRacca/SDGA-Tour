@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const axios = require('axios');
 const {Scores, Users} = require('../database');
+const Dates = require('../models/Dates');
 
 
 const router = Router();
@@ -57,6 +58,27 @@ router.get('/scoresUser', async(req, res) => {
         res.send(scores2)
     } catch (error) {
         res.send(error)
+    }
+})
+
+router.post('/date', async(req, res) => {
+    let {day, month, year} = req.body;
+    
+    try {
+        let dateCreated = await Dates.create({day, month, year});
+        res.status(200).send(dateCreated) 
+        
+    } catch (error) {
+        res.status(404).send(error) 
+    }
+})
+
+router.get('/dates', async(req, res) => {
+    try {
+        let datesTotal = await Dates.findAll()
+        res.status(200).send(datesTotal)
+    } catch (error) {
+        res.status(404).send(error)
     }
 })
 
