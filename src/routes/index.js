@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const axios = require('axios');
 const {Scores, Users, Dates} = require('../database');
+const e = require('express');
 
 
 
@@ -38,11 +39,17 @@ router.get('/scoresUser', async(req, res) => {
         let scores = await Scores.findAll()
         let users = await Users.findAll()
 
+        let usersNames = users.map(el => {
+            return{
+                user: el.name + ' ' + el.lastname,
+                matricula: el.matricula
+            }
+        })
+
         let scores2 = scores.map(el => {
             return{
                 id: el.id,
                 matricula: el.matricula,
-                user: users.filter(player => player.matricula === el.matricula).map(player => player.name + ' ' + player.lastname)[0],
                 front_nine: el.front_nine,
                 back_nine: el.back_nine,
                 handicap: el.handicap,
@@ -55,7 +62,16 @@ router.get('/scoresUser', async(req, res) => {
             }
         })
 
-        res.send(scores2)
+        let userScores = usersNames.map(user => {
+            return{
+                ...user,
+                scores: scores2.filter(el => el.matricula === user.matricula).map(el => {
+                    return el
+                })
+            }
+        })
+
+        res.send(userScores)
     } catch (error) {
         res.send(error)
     }
@@ -73,10 +89,17 @@ router.post('/date', async(req, res) => {
     }
 })
 
-router.get('/dates', async(req, res) => {
+router.get('/dates/:month/:year', async(req, res) => {
+    const {month, year} = req.params
+
     try {
         let datesTotal = await Dates.findAll()
-        res.status(200).send(datesTotal)
+        let datesFilteredYear = datesTotal.filter(el => el.year == year)
+        let datesFilteredMonth = datesFilteredYear.filter(el => el.month == month)
+        let dates = datesFilteredMonth.sort((a,b) => a.day - b.day)
+        
+
+        res.status(200).send(dates)
     } catch (error) {
         res.status(404).send(error)
     }
