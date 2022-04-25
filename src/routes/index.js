@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const axios = require('axios');
-const {Scores, Users} = require('../database');
+const {Scores, Users, Dates} = require('../database');
 const Dates = require('../models/Dates');
 
 
