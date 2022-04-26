@@ -29,6 +29,10 @@ module.exports = (sequelize) => {
     matricula: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    categoria: {
+      type: DataTypes.ENUM('A', 'B'),
+      allowNull: false
     }
   });
 };

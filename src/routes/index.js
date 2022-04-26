@@ -8,10 +8,10 @@ const e = require('express');
 const router = Router();
 
 router.post('/score', async(req, res) => {
-    let {front_nine, back_nine, handicap, date, matricula} = req.body;
+    let {front_nine, back_nine, handicap, date, matricula, categoria} = req.body;
     
     try {
-        let scorePost = await Scores.create({front_nine, back_nine, handicap, date, matricula});
+        let scorePost = await Scores.create({front_nine, back_nine, handicap, date, matricula, categoria});
         
         res.status(200).send(scorePost)
         
@@ -56,6 +56,7 @@ router.get('/scoresUser', async(req, res) => {
                 totalGross: el.front_nine + el.back_nine,
                 totalNeto: el.front_nine + el.back_nine - el.handicap,
                 date: el.date,
+                categoria: el.categoria,
                 month: el.date.slice(3, 5),
                 year: el.date.slice(6),
                 day: el.date.slice(0,2)
