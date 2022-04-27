@@ -79,10 +79,10 @@ router.get('/scoresUser', async(req, res) => {
 })
 
 router.post('/date', async(req, res) => {
-    let {day, month, year} = req.body;
+    let {day, month, year, exceptional} = req.body;
     
     try {
-        let dateCreated = await Dates.create({day, month, year});
+        let dateCreated = await Dates.create({day, month, year, exceptional});
         res.status(200).send(dateCreated) 
         
     } catch (error) {
