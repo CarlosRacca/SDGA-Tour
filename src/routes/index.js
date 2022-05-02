@@ -106,6 +106,29 @@ router.get('/dates/:month/:year', async(req, res) => {
     }
 })
 
+router.get('/dates', async(req, res) => {
+    try {
+        let datesTotal = await Dates.findAll();
+
+        let datesFull = datesTotal.map(el => {
+            return{
+                date: new Date(el.year, el.month, el.day),
+                day: el.day,
+                month: el.month,
+                year: el.year,
+                exceptional: el.exceptional,
+                id: el.id 
+            }
+        })
+
+        let datesOrdered = datesFull.sort((a,b) => a.date - b.date)
+        
+        res.status(200).send(datesOrdered)
+    } catch (error) {
+        res.status(404).send(error)
+    }
+})
+
 router.get('/scores', async(req, res) => {
     
     try {
